@@ -16,9 +16,7 @@
         }
     ],
     "permissions": [
-        "redcap_module_system_enable",
-        "redcap_module_project_enable",
-        "redcap_module_save_configuration"
+        "redcap_every_page_top"
     ],
     "enable-every-page-hooks-on-system-pages": false,
     "links": {
