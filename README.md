@@ -1,2 +1,2 @@
 # InlineTagInReport
-A template for a REDCap External Module
+EM will convert inline tags into Image or PDF files.

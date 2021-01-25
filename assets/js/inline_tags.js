@@ -81,7 +81,7 @@ Inline = {
                 // Remove in case already existed as other tag type
                 $(this).parent().find('.file-upload-inline').remove();
                 // Add iframe for embedded PDF
-                //if (height == "") height = "height:300px;";
+                var height = "height:300px;";
                 $(this).before("<object data='" + src + "' class='file-upload-inline' type='application/pdf' style='width:100%;" + width + ";max-width:" + maxwidth + "px;'><iframe class='file-upload-inline' src='" + src + "' style='width:100%;border:none;max-width:" + maxwidth + "px;" + height + "'></iframe></object>");
             } else if (isImage) {
                 // Remove in case already existed as other tag type
