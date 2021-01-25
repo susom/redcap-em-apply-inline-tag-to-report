@@ -7,7 +7,6 @@ Inline = {
             ajaxComplete: function () {
 
                 if (Inline.processed === false) {
-                    console.log(Inline.fields)
                     setTimeout(function () {
                         for (var i = 0; i < Inline.fields.length; i++) {
                             Inline.processTag(Inline.fields[i])
@@ -37,12 +36,10 @@ Inline = {
             var selector = "#questiontable tr#" + currentfield + "-tr a.filedownloadlink tr";
         }
         var usleep = 0;
-        console.log(selector)
         // Loop through one or more images to embed
         $(selector).each(function () {
             // pattern to remove extra text from url
             var regex = /window.open\(\'|\'\,\'_blank\'\);/gm;
-            console.log($(this))
             // Attributes
             var src = $(this).attr('onclick').replace('DataEntry/file_download.php', 'DataEntry/image_view.php')
                 .replace('DataEntry%2Ffile_download.php', 'DataEntry%2Fimage_view.php').replace(regex, ''); // Change to image_view.php
@@ -52,7 +49,7 @@ Inline = {
             var filename = $(this).text();
             var fileext = getfileextension(filename.toLowerCase());
             var td = $("#questiontable .rc-field-embed[var='" + field + "']").length ? $("#questiontable .rc-field-embed[var='" + field + "']") : $("#questiontable tr#" + field + "-tr>td:last");
-            var maxwidth = td.width();
+             // var maxwidth = td.width();
             var isImage = in_array(fileext, valid_image_suffixes);
             var isPdf = (fileext == 'pdf');
             // var dim = $('input[type="hidden"][name="' + field + '"]').attr('inlinedim');
@@ -66,7 +63,6 @@ Inline = {
             // Decide action to take
             var width = 'width: 500px'
             var maxwidth = '800px'
-            console.log(width);
             var action = true;
             if ($(this).css('display') == 'none' || (!isImage && !isPdf)) {
                 // If file was removed, then remove embedded image too
@@ -81,8 +77,8 @@ Inline = {
                 // Remove in case already existed as other tag type
                 $(this).parent().find('.file-upload-inline').remove();
                 // Add iframe for embedded PDF
-                var height = "height:300px;";
-                $(this).before("<object data='" + src + "' class='file-upload-inline' type='application/pdf' style='width:100%;" + width + ";max-width:" + maxwidth + "px;'><iframe class='file-upload-inline' src='" + src + "' style='width:100%;border:none;max-width:" + maxwidth + "px;" + height + "'></iframe></object>");
+                var height = "height:500px;";
+                $(this).before("<object data='" + src + "' class='file-upload-inline' type='application/pdf' style='" + width + ";" + height + ";max-width:" + maxwidth + "px;'><iframe class='file-upload-inline' src='" + src + "' style='width:100%;border:none;max-width:" + maxwidth + "px;" + height + "'></iframe></object>");
             } else if (isImage) {
                 // Remove in case already existed as other tag type
                 $(this).parent().find('.file-upload-inline').remove();
