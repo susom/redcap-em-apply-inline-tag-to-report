@@ -27,7 +27,7 @@ Inline = {
         });
     },
     injectOptions: function () {
-        $('<div class="flexigrid"><strong>Objects Options</strong></div><div class="mDiv"><input type="checkbox" name="display-objects" class="display-objects"> Hide Objects</div><div>Images/Objects Width: <input name="objects-width" id="objects-width" value="' + Inline.width + '">px</div><div>Objects Height: <input name="objects-height" id="objects-height" value="' + Inline.height + '">px</div>').insertAfter("#report_parent_div");
+        $('<div class="flexigrid"></div><div class="mDiv"><table id="objects-option-table"><thead><tr><th colspan="2" style="background-color: gray"><strong>Objects Options</strong></th></tr></thead><tbody><tr><td colspan="2"><input type="checkbox" name="display-objects" class="display-objects"> Hide Objects </td></tr><tr><td><div>Images/Objects Width: </div></td><td><input name="objects-width" id="objects-width" value="' + Inline.width + '">px</td></tr><tr><td>Objects Height: </td><td><input name="objects-height" id="objects-height" value="' + Inline.height + '">px</td></tr></tbody></table>').insertAfter("#report_parent_div").find('#objects-option-table').css('border', '1px solid #ddd').find('tr').css('border', '1px solid #ddd');
         $(document).on('click', '.display-objects', function () {
             Inline.display()
         });
