@@ -55,15 +55,18 @@ Inline = {
             var maxwidth = td.width();
             var isImage = in_array(fileext, valid_image_suffixes);
             var isPdf = (fileext == 'pdf');
-            var dim = $('input[type="hidden"][name="' + field + '"]').attr('inlinedim');
-            if (typeof dim == 'undefined') {
-                dim = new Array();
-            } else {
-                dim = (dim.indexOf(',') > -1) ? dim.split(',') : new Array(dim);
-            }
-            var width = (dim.length > 0) ? "width:" + dim[0] + (isNumeric(dim[0]) ? "px" : "") + ";" : "";
-            var height = (dim.length > 1) ? "height:" + dim[1] + (isNumeric(dim[1]) ? "px" : "") + ";" : "";
+            // var dim = $('input[type="hidden"][name="' + field + '"]').attr('inlinedim');
+            // if (typeof dim == 'undefined') {
+            //     dim = new Array();
+            // } else {
+            //     dim = (dim.indexOf(',') > -1) ? dim.split(',') : new Array(dim);
+            // }
+            // var width = (dim.length > 0) ? "width:" + dim[0] + (isNumeric(dim[0]) ? "px" : "") + ";" : "";
+            // var height = (dim.length > 1) ? "height:" + dim[1] + (isNumeric(dim[1]) ? "px" : "") + ";" : "";
             // Decide action to take
+            var width = 'width: 500px'
+            var maxwidth = '800px'
+            console.log(width);
             var action = true;
             if ($(this).css('display') == 'none' || (!isImage && !isPdf)) {
                 // If file was removed, then remove embedded image too
@@ -78,13 +81,13 @@ Inline = {
                 // Remove in case already existed as other tag type
                 $(this).parent().find('.file-upload-inline').remove();
                 // Add iframe for embedded PDF
-                if (height == "") height = "height:300px;";
-                $(this).before("<object data='" + src + "' class='file-upload-inline' type='application/pdf' style='width:100%;" + width + height + "max-width:" + maxwidth + "px;'><iframe class='file-upload-inline' src='" + src + "' style='width:100%;border:none;max-width:" + maxwidth + "px;" + height + "'></iframe></object>");
+                //if (height == "") height = "height:300px;";
+                $(this).before("<object data='" + src + "' class='file-upload-inline' type='application/pdf' style='width:100%;" + width + ";max-width:" + maxwidth + "px;'><iframe class='file-upload-inline' src='" + src + "' style='width:100%;border:none;max-width:" + maxwidth + "px;" + height + "'></iframe></object>");
             } else if (isImage) {
                 // Remove in case already existed as other tag type
                 $(this).parent().find('.file-upload-inline').remove();
                 // Add img tag for embedded image
-                $(this).before('<img src="' + src + '" class="file-upload-inline" style="' + width + height + 'max-width:' + maxwidth + 'px;" alt="' + htmlspecialchars(filename) + '">');
+                $(this).before('<img src="' + src + '" class="file-upload-inline" style="' + width + ';max-width:' + maxwidth + 'px;" alt="' + htmlspecialchars(filename) + '">');
             } else {
                 action = false;
             }
@@ -92,6 +95,7 @@ Inline = {
                 usleep += 100000;
             }
         });
+        Inline.processed = true
     }
 }
 window.onload = function () {
