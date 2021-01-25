@@ -1,7 +1,13 @@
 Inline = {
     fields: [],
     processed: false,
+    width: 500,
+    // hide/ display images nad objects.
+    isDisplay: true,
     init: function () {
+
+        // hide/display images
+
 
         $(document).on({
             ajaxComplete: function () {
@@ -11,12 +17,38 @@ Inline = {
                         for (var i = 0; i < Inline.fields.length; i++) {
                             Inline.processTag(Inline.fields[i])
                         }
-
+                        Inline.injectOptions()
                     }, 100);
 
                 }
+
             }
         });
+    },
+    injectOptions: function () {
+        $('<div class="flexigrid"><strong>Objects Options</strong></div><div class="mDiv"><input type="checkbox" name="display-objects" class="display-objects"> Hide Objects</div><div>Objects Width: <input name="objects-width" id="objects-width" value="' + Inline.width + '">px</div>').insertAfter("#report_parent_div");
+        $(document).on('click', '.display-objects', function () {
+            Inline.display()
+        });
+        $(document).on('focusout', '#objects-width', function () {
+            Inline.changeWidth()
+        });
+    },
+    changeWidth: function () {
+        Inline.width = $("#objects-width").val();
+        $("#report_table > tbody > tr > td").find('img').css('width', Inline.width);
+        $("#report_table > tbody > tr > td").find('object').css('width', Inline.width);
+    },
+    display: function () {
+        if (Inline.isDisplay === true) {
+            Inline.isDisplay = false
+            $("#report_table > tbody > tr > td").find('img').hide();
+            $("#report_table > tbody > tr > td").find('object').hide();
+        } else {
+            Inline.isDisplay = true
+            $("#report_table > tbody > tr > td").find('img').show();
+            $("#report_table > tbody > tr > td").find('object').show();
+        }
     },
     processTag: function (currentfield) {
         var valid_image_suffixes = new Array('jpeg', 'jpg', 'jpe', 'gif', 'png', 'tif', 'bmp');
@@ -61,7 +93,7 @@ Inline = {
             // var width = (dim.length > 0) ? "width:" + dim[0] + (isNumeric(dim[0]) ? "px" : "") + ";" : "";
             // var height = (dim.length > 1) ? "height:" + dim[1] + (isNumeric(dim[1]) ? "px" : "") + ";" : "";
             // Decide action to take
-            var width = 'width: 500px'
+            var width = 'width: ' + Inline.width + 'px'
             var maxwidth = '800px'
             var action = true;
             if ($(this).css('display') == 'none' || (!isImage && !isPdf)) {

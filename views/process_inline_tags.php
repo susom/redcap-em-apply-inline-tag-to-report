@@ -4,7 +4,7 @@ namespace Stanford\InlineTagInReport;
 
 /** @var \Stanford\InlineTagInReport\InlineTagInReport $this */
 
-?>
+ ?>
 <!--<input type="hidden" id="csv-export-url" value="--><?php //echo $this->getUrl('view/csv_export.php')
 ?><!--">-->
 <!--<input type="hidden" id="csv-export-session" value="">-->
