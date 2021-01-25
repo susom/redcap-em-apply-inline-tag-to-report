@@ -2,6 +2,7 @@ Inline = {
     fields: [],
     processed: false,
     width: 500,
+    height: 500,
     // hide/ display images nad objects.
     isDisplay: true,
     init: function () {
@@ -26,13 +27,20 @@ Inline = {
         });
     },
     injectOptions: function () {
-        $('<div class="flexigrid"><strong>Objects Options</strong></div><div class="mDiv"><input type="checkbox" name="display-objects" class="display-objects"> Hide Objects</div><div>Objects Width: <input name="objects-width" id="objects-width" value="' + Inline.width + '">px</div>').insertAfter("#report_parent_div");
+        $('<div class="flexigrid"><strong>Objects Options</strong></div><div class="mDiv"><input type="checkbox" name="display-objects" class="display-objects"> Hide Objects</div><div>Images/Objects Width: <input name="objects-width" id="objects-width" value="' + Inline.width + '">px</div><div>Objects Height: <input name="objects-height" id="objects-height" value="' + Inline.height + '">px</div>').insertAfter("#report_parent_div");
         $(document).on('click', '.display-objects', function () {
             Inline.display()
         });
         $(document).on('focusout', '#objects-width', function () {
             Inline.changeWidth()
         });
+        $(document).on('focusout', '#objects-height', function () {
+            Inline.changeHeight()
+        });
+    },
+    changeHeight: function () {
+        Inline.height = $("#objects-height").val();
+        $("#report_table > tbody > tr > td").find('object').css('height', Inline.height);
     },
     changeWidth: function () {
         Inline.width = $("#objects-width").val();
@@ -109,7 +117,7 @@ Inline = {
                 // Remove in case already existed as other tag type
                 $(this).parent().find('.file-upload-inline').remove();
                 // Add iframe for embedded PDF
-                var height = "height:500px;";
+                var height = "height: " + Inline.height + "px;";
                 $(this).before("<object data='" + src + "' class='file-upload-inline' type='application/pdf' style='" + width + ";" + height + ";max-width:" + maxwidth + "px;'><iframe class='file-upload-inline' src='" + src + "' style='width:100%;border:none;max-width:" + maxwidth + "px;" + height + "'></iframe></object>");
             } else if (isImage) {
                 // Remove in case already existed as other tag type
