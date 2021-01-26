@@ -58,8 +58,17 @@ Inline = {
             $("#report_table > tbody > tr > td").find('object').show();
         }
     },
+    allLetter: function (inputtxt) {
+        var regExp = /[a-zA-Z]/g;
+
+        if (regExp.test(inputtxt)) {
+            return true;
+        } else {
+            return false;
+        }
+    },
     processTag: function (currentfield) {
-        var valid_image_suffixes = new Array('jpeg', 'jpg', 'jpe', 'gif', 'png', 'tif', 'bmp', '');
+        var valid_image_suffixes = new Array('jpeg', 'jpg', 'jpe', 'gif', 'png', 'tif', 'bmp');
         if (typeof currentfield == 'undefined') currentfield = '';
         var fieldEmbedded = false;
         if (currentfield == '') {
@@ -89,8 +98,16 @@ Inline = {
             var filename = $(this).text();
             var fileext = getfileextension(filename.toLowerCase());
             var td = $("#questiontable .rc-field-embed[var='" + field + "']").length ? $("#questiontable .rc-field-embed[var='" + field + "']") : $("#questiontable tr#" + field + "-tr>td:last");
-             // var maxwidth = td.width();
+            // var maxwidth = td.width();
+
+
             var isImage = in_array(fileext, valid_image_suffixes);
+
+            // exception to capture images with no extension
+            if (Inline.allLetter(fileext) === false && in_array(fileext, valid_image_suffixes) === false) {
+                isImage = true
+            }
+
             var isPdf = (fileext == 'pdf');
             // var dim = $('input[type="hidden"][name="' + field + '"]').attr('inlinedim');
             // if (typeof dim == 'undefined') {
