@@ -59,7 +59,7 @@ Inline = {
         }
     },
     processTag: function (currentfield) {
-        var valid_image_suffixes = new Array('jpeg', 'jpg', 'jpe', 'gif', 'png', 'tif', 'bmp');
+        var valid_image_suffixes = new Array('jpeg', 'jpg', 'jpe', 'gif', 'png', 'tif', 'bmp', '');
         if (typeof currentfield == 'undefined') currentfield = '';
         var fieldEmbedded = false;
         if (currentfield == '') {
