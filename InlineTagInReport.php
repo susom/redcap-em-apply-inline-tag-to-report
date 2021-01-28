@@ -1,8 +1,9 @@
 <?php
 
 namespace Stanford\InlineTagInReport;
-
 require_once "emLoggerTrait.php";
+
+use ZipArchive;
 
 /**
  * Class InlineTagInReport
@@ -11,6 +12,7 @@ require_once "emLoggerTrait.php";
  * @property int $reportId;
  * @property array $report
  * @property array $fieldsWithInlineTag
+ * @property ZipArchive $zipFolder
  */
 class InlineTagInReport extends \ExternalModules\AbstractExternalModule
 {
@@ -24,6 +26,8 @@ class InlineTagInReport extends \ExternalModules\AbstractExternalModule
     private $report;
 
     private $fieldsWithInlineTag;
+
+    private $zipFolder;
 
     public function __construct()
     {
@@ -40,7 +44,6 @@ class InlineTagInReport extends \ExternalModules\AbstractExternalModule
         if (strpos($_SERVER['SCRIPT_NAME'], 'DataExport/index') !== false && isset($_GET['report_id'])) {
 
             $this->setReportId(filter_var($_GET['report_id'], FILTER_SANITIZE_NUMBER_INT));
-            $this->setReport(\REDCap::getReport($this->getReportId()));
             $this->setFieldsWithInlineTag();
 
             // if we have fields with @INLINE tags then call function to process them
@@ -49,9 +52,47 @@ class InlineTagInReport extends \ExternalModules\AbstractExternalModule
                 $this->includeFile("views/process_inline_tags.php");
             }
 
-        } elseif (strpos($_SERVER['SCRIPT_NAME'], 'DataExport/index') !== false && !isset($_GET['report_id'])) {
-            echo 'hello world';
         }
+    }
+
+    public function massDownload($fieldName)
+    {
+        // create zip folder for download
+        $this->setZipFolder(new ZipArchive());
+
+        $fileName = APP_PATH_TEMP . date("YmdHis") . '_' . $fieldName . '.zip';
+        /**
+         * Open main instruments archive file for save
+         */
+        if ($this->getZipFolder()->open($fileName, ZipArchive::CREATE) !== true) {
+            throw new \Exception('cant open zip folder');
+        }
+        // calling this function to get edoc id because report returns file name istead of id.
+        $records = \REDCap::getData();
+        foreach ($this->getReport() as $id => $events) {
+            foreach ($events as $eventId => $fieldsArray) {
+                foreach ($fieldsArray as $fieldId => $field) {
+                    if ($fieldId == $fieldName) {
+
+
+                        $temp = \Files::copyEdocToTemp($records[$id][$eventId][$fieldName]);
+                        $this->getZipFolder()->addFile($temp, 'files/' . $field);
+
+//                        $content = \Files::getEdocContentsAttributes($records[$id][$eventId][$fieldName]);
+//                        $this->getZipFolder()->addFromString('files/' . $field, $content[2]);
+                    }
+                }
+            }
+        }
+        $this->getZipFolder()->close();
+        $this->downloadZipFile($fileName, $fieldName . '.zip');
+    }
+
+    private function downloadZipFile($path, $fileName)
+    {
+        header('Content-disposition: attachment; filename=' . $fileName . '');
+        header('Content-type: application/zip');
+        readfile($path);
     }
 
     /**
@@ -91,6 +132,7 @@ class InlineTagInReport extends \ExternalModules\AbstractExternalModule
      */
     public function setReportId($reportId)
     {
+        $this->setReport(\REDCap::getReport($reportId));
         $this->reportId = $reportId;
     }
 
@@ -137,6 +179,22 @@ class InlineTagInReport extends \ExternalModules\AbstractExternalModule
         if (!empty($array)) {
             $this->fieldsWithInlineTag = $array;
         }
+    }
+
+    /**
+     * @return ZipArchive
+     */
+    public function getZipFolder()
+    {
+        return $this->zipFolder;
+    }
+
+    /**
+     * @param ZipArchive $zipFolder
+     */
+    public function setZipFolder($zipFolder)
+    {
+        $this->zipFolder = $zipFolder;
     }
 
 

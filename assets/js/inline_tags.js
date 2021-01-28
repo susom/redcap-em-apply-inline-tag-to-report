@@ -5,6 +5,7 @@ Inline = {
     height: 500,
     // hide/ display images nad objects.
     isDisplay: true,
+    test: '',
     init: function () {
 
         // hide/display images
