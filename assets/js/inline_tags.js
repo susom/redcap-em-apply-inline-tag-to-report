@@ -4,10 +4,26 @@ Inline = {
     width: 500,
     height: 500,
     // hide/ display images nad objects.
-    isDisplay: true,
+    displayed: true,
     reportId: null,
     massDownloadURL: '',
     init: function () {
+
+        if (getCookie('report_config' + Inline.reportId) != null) {
+            var json = getCookie('report_config' + Inline.reportId);
+            json = JSON.parse(json)
+
+            Inline.displayed = json[0] === '0' ? true : false;
+            var width = json['1'];
+            var height = json['2'];
+            Inline.display()
+            Inline.changeWidth()
+            Inline.changeHeight()
+            console.log(json)
+            Inline.width = width
+            Inline.height = height
+        }
+
 
         $(document).on('click', '.mass-download', function () {
             var report_id = $(this).data('report-id');
@@ -41,16 +57,29 @@ Inline = {
         });
     },
     injectOptions: function () {
-        $('<div class="flexigrid"></div><div class="mDiv"><table id="objects-option-table"><thead><tr><th colspan="2" style="background-color: gray"><strong>Objects Options</strong></th></tr></thead><tbody><tr><td colspan="2"><input type="checkbox" name="display-objects" class="display-objects"> Hide Objects </td></tr><tr><td><div>Images/Objects Width: </div></td><td><input name="objects-width" id="objects-width" value="' + Inline.width + '">px</td></tr><tr><td>Objects Height: </td><td><input name="objects-height" id="objects-height" value="' + Inline.height + '">px</td></tr></tbody></table>').insertAfter("#report_parent_div").find('#objects-option-table').css('border', '1px solid #ddd').find('tr').css('border', '1px solid #ddd');
+        var checked = Inline.displayed === false ? 'checked' : '';
+
+        Inline.display()
+
+        $('<div class="flexigrid"></div><div class="mDiv"><table id="objects-option-table"><thead><tr><th colspan="2" style="background-color: gray"><strong>Objects Options</strong></th></tr></thead><tbody><tr><td colspan="2"><input type="checkbox" ' + checked + ' name="display-objects" class="display-objects"> Hide Objects </td></tr><tr><td><div>Images/Objects Width: </div></td><td><input name="objects-width" id="objects-width" value="' + Inline.width + '">px</td></tr><tr><td>Objects Height: </td><td><input name="objects-height" id="objects-height" value="' + Inline.height + '">px</td></tr></tbody></table>').insertAfter("#report_parent_div").find('#objects-option-table').css('border', '1px solid #ddd').find('tr').css('border', '1px solid #ddd');
         $(document).on('click', '.display-objects', function () {
-            Inline.display()
+            Inline.displayed = $('.display-objects:checked').length === 1 ? false : true
+            Inline.display();
+            Inline.setReportCookie();
         });
         $(document).on('focusout', '#objects-width', function () {
-            Inline.changeWidth()
+            Inline.changeWidth();
+            Inline.setReportCookie();
         });
         $(document).on('focusout', '#objects-height', function () {
-            Inline.changeHeight()
+            Inline.changeHeight();
+            Inline.setReportCookie();
         });
+    },
+    setReportCookie: function () {
+        var array = [Inline.displayed === true ? '0' : '1', parseInt(Inline.width), parseInt(Inline.height)];
+        var json_str = JSON.stringify(array);
+        setCookie('report_config' + Inline.reportId, json_str);
     },
     changeHeight: function () {
         Inline.height = $("#objects-height").val();
@@ -62,15 +91,15 @@ Inline = {
         $("#report_table > tbody > tr > td").find('object').css('width', Inline.width);
     },
     display: function () {
-        if (Inline.isDisplay === true) {
-            Inline.isDisplay = false
+        //console.log(Inline.displayed)
+        if (Inline.displayed === false) {
             $("#report_table > tbody > tr > td").find('img').hide();
             $("#report_table > tbody > tr > td").find('object').hide();
         } else {
-            Inline.isDisplay = true
             $("#report_table > tbody > tr > td").find('img').show();
             $("#report_table > tbody > tr > td").find('object').show();
         }
+
     },
     allLetter: function (inputtxt) {
         var regExp = /[a-zA-Z]/g;
@@ -192,6 +221,32 @@ Inline = {
         Inline.processed = true
     }
 }
+
+function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
+function eraseCookie(name) {
+    document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
 window.onload = function () {
     Inline.init();
 }
