@@ -6,8 +6,8 @@ namespace Stanford\InlineTagInReport;
 
 
 try {
-    $field = 'image';
-    $module->setReportId('557');
+    $field = filter_var($_GET['field'], FILTER_SANITIZE_STRING);
+    $module->setReportId(filter_var($_GET['report_id'], FILTER_SANITIZE_STRING));
     $module->massDownload($field);
 } catch (\Exception $e) {
     $module->emError($e->getMessage());

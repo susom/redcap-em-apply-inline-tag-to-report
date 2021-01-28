@@ -5,20 +5,33 @@ Inline = {
     height: 500,
     // hide/ display images nad objects.
     isDisplay: true,
-    test: '',
+    reportId: null,
+    massDownloadURL: '',
     init: function () {
 
-        // hide/display images
+        $(document).on('click', '.mass-download', function () {
+            var report_id = $(this).data('report-id');
+            var field = $(this).data('field');
 
+            var win = window.open(Inline.massDownloadURL + '&field=' + field + '&report_id=' + report_id, '_blank');
+            if (win) {
+                //Browser has allowed it to be opened
+                win.focus();
+            } else {
+                //Browser has blocked it
+                alert('Please allow popups for this website');
+            }
+        });
 
         $(document).on({
             ajaxComplete: function () {
 
                 if (Inline.processed === false) {
                     setTimeout(function () {
-                        for (var i = 0; i < Inline.fields.length; i++) {
-                            Inline.processTag(Inline.fields[i])
-                        }
+                        // for (var i = 0; i < Inline.fields.length; i++) {
+                        //     Inline.processTag(Inline.fields[i])
+                        // }
+                        Inline.processTag()
                         Inline.injectOptions()
                     }, 100);
 
@@ -68,24 +81,51 @@ Inline = {
             return false;
         }
     },
-    processTag: function (currentfield) {
+    processTag: function () {
         var valid_image_suffixes = new Array('jpeg', 'jpg', 'jpe', 'gif', 'png', 'tif', 'bmp');
-        if (typeof currentfield == 'undefined') currentfield = '';
-        var fieldEmbedded = false;
-        if (currentfield == '') {
-            // Multiple fields
-            var selector = "#questiontable tr.\\@INLINE a.filedownloadlink, #questiontable .rc-field-embed.file-upload-inline-embed a.filedownloadlink";
-        } else if ($("#questiontable .rc-field-embed[var='" + currentfield + "']").length) {
-            // Single field embedded
-            var selector = "#questiontable .rc-field-embed[var='" + currentfield + "'] a.filedownloadlink";
-        } else if ($("#report_table").length) {
-            // Single field non-embedded
-            var selector = "#report_table > tbody > tr > td > button";
-        } else {
-            // Single field non-embedded
-            var selector = "#questiontable tr#" + currentfield + "-tr a.filedownloadlink tr";
-        }
+        // if (typeof currentfield == 'undefined') currentfield = '';
+        // var fieldEmbedded = false;
+        // if (currentfield == '') {
+        //     // Multiple fields
+        //     var selector = "#questiontable tr.\\@INLINE a.filedownloadlink, #questiontable .rc-field-embed.file-upload-inline-embed a.filedownloadlink";
+        // } else if ($("#questiontable .rc-field-embed[var='" + currentfield + "']").length) {
+        //     // Single field embedded
+        //     var selector = "#questiontable .rc-field-embed[var='" + currentfield + "'] a.filedownloadlink";
+        // } else if ($("#report_table").length) {
+        //     // Single field non-embedded
+        //     var selector = "#report_table > tbody > tr > td > button";
+        //
+        //     var header_selector = "#report_table > thead > tr > th > div.rpthdr"
+        // } else {
+        //     // Single field non-embedded
+        //     var selector = "#questiontable tr#" + currentfield + "-tr a.filedownloadlink tr";
+        // }
+
+        var selector = "#report_table > tbody > tr > td > button";
+
+        var header_selector = "#report_table > thead > tr > th"
         var usleep = 0;
+
+        var last_row = '<tr>';
+        var count = $(header_selector).length
+        // add mass download button
+        $(header_selector).each(function (i) {
+//            console.log(Inline.fields.includes($(this).text()))
+            // this field has INLINE tag
+            last_row += '<td>';
+            if (Inline.fields.includes($(this).find('div.rpthdr').text())) {
+                //$(this).after('<div style="z-index: 99999999"><button class="mass-download" data-field="'+$(this).text()+'" data-report-id="'+Inline.reportId+'">Download All Objects</button></div>')
+                var text = $(this).text()
+
+
+                last_row += '<div ><button class="mass-download" data-field="' + $(this).find('div.rpthdr').text() + '" data-report-id="' + Inline.reportId + '">Download ' + $(this).clone().children().remove().end().text() + '</button></div>';
+            }
+            last_row += '</td>';
+            if (!--count) {
+                last_row += '</tr>';
+                $('#report_table tr:last').after(last_row);
+            }
+        })
         // Loop through one or more images to embed
         $(selector).each(function () {
             // pattern to remove extra text from url

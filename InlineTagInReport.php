@@ -74,12 +74,12 @@ class InlineTagInReport extends \ExternalModules\AbstractExternalModule
                 foreach ($fieldsArray as $fieldId => $field) {
                     if ($fieldId == $fieldName) {
 
+//
+//                        $temp = \Files::copyEdocToTemp($records[$id][$eventId][$fieldName]);
+//                        $this->getZipFolder()->addFile($temp, 'files/' . $field);
 
-                        $temp = \Files::copyEdocToTemp($records[$id][$eventId][$fieldName]);
-                        $this->getZipFolder()->addFile($temp, 'files/' . $field);
-
-//                        $content = \Files::getEdocContentsAttributes($records[$id][$eventId][$fieldName]);
-//                        $this->getZipFolder()->addFromString('files/' . $field, $content[2]);
+                        $content = \Files::getEdocContentsAttributes($records[$id][$eventId][$fieldName]);
+                        $this->getZipFolder()->addFromString('files/' . $field, $content[2]);
                     }
                 }
             }
