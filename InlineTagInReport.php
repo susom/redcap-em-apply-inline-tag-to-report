@@ -55,7 +55,7 @@ class InlineTagInReport extends \ExternalModules\AbstractExternalModule
         }
     }
 
-    public function massDownload($fieldName)
+    public function massDownload($fieldName, $outputFileFormat)
     {
         // create zip folder for download
         $this->setZipFolder(new ZipArchive());
@@ -74,18 +74,37 @@ class InlineTagInReport extends \ExternalModules\AbstractExternalModule
                 foreach ($fieldsArray as $fieldId => $field) {
                     if ($fieldId == $fieldName) {
 
-//
 //                        $temp = \Files::copyEdocToTemp($records[$id][$eventId][$fieldName]);
 //                        $this->getZipFolder()->addFile($temp, 'files/' . $field);
 
                         $content = \Files::getEdocContentsAttributes($records[$id][$eventId][$fieldName]);
-                        $this->getZipFolder()->addFromString('files/' . $field, $content[2]);
+                        $this->getZipFolder()->addFromString('files/' . $this->replaceRecordLabels($outputFileFormat, $records[$id][$eventId]) . $field, $content[2]);
                     }
                 }
             }
         }
         $this->getZipFolder()->close();
         $this->downloadZipFile($fileName, $fieldName . '.zip');
+    }
+
+    public function replaceRecordLabels($text, $row)
+    {
+        $origin = $text;
+        preg_match_all("/\[(.*?)\]/", $text, $matches);
+        foreach ($matches[1] as $match) {
+            if (isset($row[$match])) {
+                $text = str_replace($match, $row[$match], $text);
+            }
+        }
+        if ($origin != $text) {
+            $text = str_replace("]", "", $text);
+            $text = str_replace("[", "", $text);
+            return $text;
+        } else {
+            return false;
+        }
+
+
     }
 
     private function downloadZipFile($path, $fileName)

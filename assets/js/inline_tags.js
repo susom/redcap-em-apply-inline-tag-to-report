@@ -28,8 +28,9 @@ Inline = {
         $(document).on('click', '.mass-download', function () {
             var report_id = $(this).data('report-id');
             var field = $(this).data('field');
+            var file_name = $("#field-" + field).val();
 
-            var win = window.open(Inline.massDownloadURL + '&field=' + field + '&report_id=' + report_id, '_blank');
+            var win = window.open(Inline.massDownloadURL + '&field=' + field + '&report_id=' + report_id + '&file_name=' + file_name, '_blank');
             if (win) {
                 //Browser has allowed it to be opened
                 win.focus();
@@ -61,7 +62,7 @@ Inline = {
 
         Inline.display()
 
-        $('<div class="flexigrid"></div><div class="mDiv"><table id="objects-option-table"><thead><tr><th colspan="2" style="background-color: gray"><strong>Objects Options</strong></th></tr></thead><tbody><tr><td colspan="2"><input type="checkbox" ' + checked + ' name="display-objects" class="display-objects"> Hide Objects </td></tr><tr><td><div>Images/Objects Width: </div></td><td><input name="objects-width" id="objects-width" value="' + Inline.width + '">px</td></tr><tr><td>Objects Height: </td><td><input name="objects-height" id="objects-height" value="' + Inline.height + '">px</td></tr></tbody></table>').insertAfter("#report_parent_div").find('#objects-option-table').css('border', '1px solid #ddd').find('tr').css('border', '1px solid #ddd');
+        $('<div class="flexigrid"></div><div class="mDiv"><table id="objects-option-table"><thead><tr><th colspan="2" style="background-color: gray"><strong>Objects Options</strong></th></tr></thead><tbody><tr><td colspan="2"><input type="checkbox" ' + checked + ' name="display-objects" class="display-objects"> Hide Objects </td></tr><tr><td><div>Images/Objects Width: </div></td><td><input name="objects-width" id="objects-width" value="' + Inline.width + '">px</td></tr><tr><td>Objects Height: </td><td><input name="objects-height" id="objects-height" value="' + Inline.height + '">px</td></tr></tbody></table>').insertAfter("#this_report_title").find('#objects-option-table').css('border', '1px solid #ddd').find('tr').css('border', '1px solid #ddd');
         $(document).on('click', '.display-objects', function () {
             Inline.displayed = $('.display-objects:checked').length === 1 ? false : true
             Inline.display();
@@ -135,24 +136,21 @@ Inline = {
         var header_selector = "#report_table > thead > tr > th"
         var usleep = 0;
 
-        var last_row = '<tr>';
+        var last_row = '<table><tr><td colspan="3"><div><strong>You can append record values to the downloaded file name using REDCap smart variables.</strong></div></td></tr>';
         var count = $(header_selector).length
         // add mass download button
         $(header_selector).each(function (i) {
 //            console.log(Inline.fields.includes($(this).text()))
             // this field has INLINE tag
-            last_row += '<td>';
             if (Inline.fields.includes($(this).find('div.rpthdr').text())) {
                 //$(this).after('<div style="z-index: 99999999"><button class="mass-download" data-field="'+$(this).text()+'" data-report-id="'+Inline.reportId+'">Download All Objects</button></div>')
-                var text = $(this).text()
 
 
-                last_row += '<div ><button class="mass-download" data-field="' + $(this).find('div.rpthdr').text() + '" data-report-id="' + Inline.reportId + '">Download ' + $(this).clone().children().remove().end().text() + '</button></div>';
+                last_row += '<tr><td>' + $(this).clone().children().remove().end().text() + ': </td><td><input type="text" name="field-' + $(this).find('div.rpthdr').text() + '" id="field-' + $(this).find('div.rpthdr').text() + '" value="[record_id]_"> </td><td><button class="mass-download" data-field="' + $(this).find('div.rpthdr').text() + '" data-report-id="' + Inline.reportId + '">Download All ' + $(this).clone().children().remove().end().text() + '</button></td></tr>';
             }
-            last_row += '</td>';
             if (!--count) {
-                last_row += '</tr>';
-                $('#report_table tr:last').after(last_row);
+                last_row += '</table>';
+                $('#this_report_title').before(last_row);
             }
         })
         // Loop through one or more images to embed
