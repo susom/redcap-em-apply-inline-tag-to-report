@@ -7,6 +7,7 @@ Inline = {
     displayed: true,
     reportId: null,
     massDownloadURL: '',
+    primaryKey: '',
     init: function () {
 
         if (getCookie('report_config' + Inline.reportId) != null) {
@@ -146,7 +147,7 @@ Inline = {
                 //$(this).after('<div style="z-index: 99999999"><button class="mass-download" data-field="'+$(this).text()+'" data-report-id="'+Inline.reportId+'">Download All Objects</button></div>')
 
 
-                last_row += '<tr><td>' + $(this).clone().children().remove().end().text() + ': </td><td><input type="text" name="field-' + $(this).find('div.rpthdr').text() + '" id="field-' + $(this).find('div.rpthdr').text() + '" value="[record_id]_"> </td><td><button class="mass-download" data-field="' + $(this).find('div.rpthdr').text() + '" data-report-id="' + Inline.reportId + '">Download All ' + $(this).clone().children().remove().end().text() + '</button></td></tr>';
+                last_row += '<tr><td>' + $(this).clone().children().remove().end().text() + ': </td><td><input type="text" name="field-' + $(this).find('div.rpthdr').text() + '" id="field-' + $(this).find('div.rpthdr').text() + '" value="[' + Inline.primaryKey + ']_"> </td><td><button class="mass-download" data-field="' + $(this).find('div.rpthdr').text() + '" data-report-id="' + Inline.reportId + '">Download All ' + $(this).clone().children().remove().end().text() + '</button></td></tr>';
             }
             if (!--count) {
                 last_row += '</table>';

@@ -11,6 +11,7 @@ namespace Stanford\InlineTagInReport;
 <script src="<?php echo $this->getUrl('assets/js/inline_tags.js') ?>"></script>
 <script type="text/javascript">
     Inline.fields = <?php echo json_encode($this->getFieldsWithInlineTag()); ?>;
+    Inline.primaryKey = "<?php echo \REDCap::getRecordIdField(); ?>"
     Inline.reportId = <?php echo $this->getReportId(); ?>;
     Inline.massDownloadURL = "<?php echo $this->getUrl('ajax/mass_download.php', false, true); ?>";
 </script>
