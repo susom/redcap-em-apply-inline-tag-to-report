@@ -4,7 +4,7 @@ Also, the EM support following features:
 1. Mass download of all report files.
 2. hide/display files and images.
 3. change images width.
-4. change files hieght.
+4. change files height.
 
 
 
