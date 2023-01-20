@@ -3,6 +3,7 @@
 namespace Stanford\InlineTagInReport;
 require_once "emLoggerTrait.php";
 
+use ExternalModules\ExternalModules;
 use ZipArchive;
 
 /**
@@ -55,12 +56,16 @@ class InlineTagInReport extends \ExternalModules\AbstractExternalModule
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     public function massDownload($fieldName, $outputFileFormat)
     {
         // create zip folder for download
         $this->setZipFolder(new ZipArchive());
 
-        $fileName = APP_PATH_TEMP . date("YmdHis") . '_' . $fieldName . '.zip';
+        //$fileName = APP_PATH_TEMP . date("YmdHis") . '_' . $fieldName . '.zip';
+        $fileName = ExternalModules::getSafePath(date("YmdHis") . '_' . $fieldName . '.zip', APP_PATH_TEMP);
         /**
          * Open main instruments archive file for save
          */
@@ -84,7 +89,7 @@ class InlineTagInReport extends \ExternalModules\AbstractExternalModule
             }
         }
         $this->getZipFolder()->close();
-        $this->downloadZipFile($fileName, $fieldName . '.zip');
+        $this->downloadZipFile($fileName, 'files.zip');
     }
 
     public function replaceRecordLabels($text, $row)
@@ -109,9 +114,14 @@ class InlineTagInReport extends \ExternalModules\AbstractExternalModule
 
     private function downloadZipFile($path, $fileName)
     {
-        header('Content-disposition: attachment; filename=' . $fileName . '');
+        header('Content-disposition: attachment; filename=' . $this->addFileNameToContentDisposition($fileName) . '');
         header('Content-type: application/zip');
         readfile($path);
+    }
+
+    function addFileNameToContentDisposition(string $fileName): string
+    {
+        return addslashes($fileName);
     }
 
     /**
