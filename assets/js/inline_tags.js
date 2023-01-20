@@ -157,7 +157,7 @@ Inline = {
         // Loop through one or more images to embed
         $(selector).each(function () {
             // pattern to remove extra text from url
-            var regex = /window.open\(\'|\'\,\'_blank\'\);/gm;
+            var regex = /.*window.open\(\'|\'\,\'_blank\'\);/gm;
             // Attributes
             var src = $(this).attr('onclick').replace('DataEntry/file_download.php', 'DataEntry/image_view.php')
                 .replace('DataEntry%2Ffile_download.php', 'DataEntry%2Fimage_view.php').replace(regex, ''); // Change to image_view.php
