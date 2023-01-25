@@ -65,7 +65,7 @@ class InlineTagInReport extends \ExternalModules\AbstractExternalModule
         $this->setZipFolder(new ZipArchive());
 
         //$fileName = APP_PATH_TEMP . date("YmdHis") . '_' . $fieldName . '.zip';
-        $fileName = ExternalModules::getSafePath(date("YmdHis") . '_' . $fieldName . '.zip', APP_PATH_TEMP);
+        $fileName = $this->getSafePath(date("YmdHis") . '_' . $fieldName . '.zip', APP_PATH_TEMP);
         /**
          * Open main instruments archive file for save
          */

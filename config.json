@@ -1,18 +1,19 @@
 {
-    "name": "InlineTagInReport",
-    "namespace": "Stanford\\InlineTagInReport",
-    "description": "A template for a REDCap External Module",
-    "documentation": "README.md",
-    "authors": [
-        {
-            "name": "Andrew Martin",
-            "email": "andy123@stanford.edu",
-            "institution": "Stanford University"
-        },
-        {
-            "name": "Ihab Zeedia",
-            "email": "ihabz@stanford.edu",
-            "institution": "Stanford University"
+  "name": "InlineTagInReport",
+  "namespace": "Stanford\\InlineTagInReport",
+  "description": "A template for a REDCap External Module",
+  "documentation": "README.md",
+  "framework-version": 10,
+  "authors": [
+    {
+      "name": "Andrew Martin",
+      "email": "andy123@stanford.edu",
+      "institution": "Stanford University"
+    },
+    {
+      "name": "Ihab Zeedia",
+      "email": "ihabz@stanford.edu",
+      "institution": "Stanford University"
         }
     ],
     "permissions": [
